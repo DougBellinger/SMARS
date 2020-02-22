@@ -1,3 +1,34 @@
+function debounced(delay, fn) {
+  let timerId;
+  return function (...args) {
+    if (timerId) {
+      clearTimeout(timerId);
+    }
+    timerId = setTimeout(() => {
+      fn(...args);
+      timerId = null;
+    }, delay);
+  }
+}
+
+const positions = [ 0, 90, 180, 270 ];
+const commnads = ["RR", "FW", "RL", "RV"];
+function move_handler(evt, data) {
+  if (data.distance == 50) {
+    var a = data.angle.degree;
+    positions.forEach(function(p, index) {
+    if (Math.min(Math.abs(a-p), Math.abs((360-a)-p)) < 20) {
+      console.log ("position:", index);
+        $.get("/command.php", { command: {F : 1} },  function(data){
+          console.log(data);
+        }).fail(function() {
+          console.log("command failed");
+        });
+      }
+    });
+  }
+}
+
 function joystick_init() {
   var options = {
     position: {
@@ -11,23 +42,11 @@ function joystick_init() {
   };
   var manager = nipplejs.create(options);
   var joystick;
-  const positions = [ 0, 90, 180, 270 ];
-  const commnads = ["RR", "FW", "RL", "RV"];
-  manager.on('start', function(evt, joystick) {
+
+  manager.on('start', 
+  function(evt, joystick) {
     joystick.off();
-    joystick.on('move', function(evt, data) {
-      //console.log(evt, data);
-      console.log(data.angle.degree, data.distance);
-      if (data.distance == 50) {
-        var a = data.angle.degree;
-        positions.forEach(function(p, index) {
-          if (Math.min(Math.abs(a-p), Math.abs((360-a)-p)) < 20) {
-            console.log ("position:", index);
-            $.get("./cgi-bin/command.py");
-          }
-        });
-      }
-    });
+    joystick.on('move', debounced(500, move_handler));
     joystick.on('plain:up', function(evt, data) {
       // DO EVERYTHING
       console.log(evt);

@@ -1,27 +1,21 @@
-# Pin definitions
-import time 
 import RPi.GPIO as GPIO  # @UnresolvedImport
-#import sys
-#sys.path.append(r'/usr/lib/cgi-bin')
-#import pydevd  # @UnresolvedImport
-#pydevd.settrace('192.168.2.63') # replace IP with address
-                                # of Eclipse host machine
 
 class Motors:
-    motor_1en = 25 
+    # Pin definitions - EN pins are PWM0, PMW1
+    motor_1en = 12 
     motor_1a = 23 
     motor_1b = 24 
-    motor_2en = 22 
+    motor_2en = 13 
     motor_2a = 27 
     motor_2b = 17 
-    def __init__(self, e1=25,a1=23,b1=24,e2=22,a2=27,b2=17):
+    def __init__(self, e1=12,a1=24,b1=23,e2=13,a2=17,b2=27):
         global motor_1en, motor_1a, motor_1b, motor_2en, motor_2a, motor_2b
-        motor_1en = 25 
-        motor_1a = 23 
-        motor_1b = 24 
-        motor_2en = 22 
-        motor_2a = 27 
-        motor_2b = 17 
+        motor_1en = e1 
+        motor_1a = a1 
+        motor_1b = b1 
+        motor_2en = e2 
+        motor_2a = a2 
+        motor_2b = b2 
         GPIO.setmode(GPIO.BCM) 
         GPIO.setup(motor_1en, GPIO.OUT)
         GPIO.setup(motor_1a, GPIO.OUT)

@@ -65,8 +65,9 @@ class PubProtocol(basic.LineReceiver):
                 for attr, value in command.__dict__.items():
                     function = commands.get(attr)
                     if (function != None):
-                        guard_timer = function(value)
-                        logger.info("Function %s(%d) returned %d", attr, value, guard_timer)
+                        fValue = float(value);
+                        guard_timer = function(fValue)
+                        logger.info("Function %s(%f) returned %d", attr, fValue, guard_timer)
                     else:
                         logger.info("Unknown command %s(%d)", attr, value)
             except:
